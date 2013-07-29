@@ -1,0 +1,19 @@
+<!doctype html>
+<html>
+<head>
+  <script src="/engine.io.js"></script>
+  <script>
+    var socket = eio.Socket();
+
+    document.addEventListener('DOMContentLoaded', function(e) {
+      console.log(e);
+    }, false);
+
+    socket.on('message', function(data) {
+      document.write(data);
+    });
+  </script>
+</head>
+<body>
+</body>
+</html>

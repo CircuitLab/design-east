@@ -1,0 +1,10 @@
+{
+  "name": "design-east",
+  "dependencies": {
+    "tuiter": "~0.2.10",
+    "engine.io-client": "~0.6.3",
+    "engine.io": "~0.6.3",
+    "express": "~3.3.4",
+    "mecab-ffi": "0.0.8"
+  }
+}
