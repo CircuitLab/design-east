@@ -5,6 +5,7 @@ var mecab = require('mecab-ffi');
 var server = require('http').createServer(app);
 var io = require('engine.io').attach(server);
 
+app.set('port', process.env.PORT || 3000);
 app.use(express.static(__dirname + '/public'));
 
 var tuiter = require('tuiter');
@@ -23,6 +24,6 @@ tu.filter({ track: ['#拡散希望'] }, function(stream) {
   }); 
 });
 
-server.listen(3000, function() {
-  console.log('listening in port %s', 3000);
+server.listen(app.get('port'), function() {
+  console.log('listening in port %s', app.get('port'));
 });
