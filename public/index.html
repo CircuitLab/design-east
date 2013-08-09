@@ -5,12 +5,9 @@
   <script>
     var socket = eio.Socket();
 
-    document.addEventListener('DOMContentLoaded', function(e) {
-      console.log(e);
-    }, false);
-
     socket.on('message', function(data) {
-      document.write(data);
+      console.log(data);
+      document.write(data.segments);
     });
   </script>
 </head>
