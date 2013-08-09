@@ -6,8 +6,9 @@
     var socket = eio.Socket();
 
     socket.on('message', function(data) {
+      data = JSON.parse(data);
       console.log(data);
-      document.write(data.segments);
+      document.write('<pre>' + JSON.stringify(data.segments, 2) + '</pre>');
     });
   </script>
 </head>
