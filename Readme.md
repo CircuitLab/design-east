@@ -18,6 +18,10 @@ Clone from repo and resolve dependencies.
 Start application.
 
     $ npm start
+ 
+or
+
+	$ PORT=3333 npm start
     
 ## License
 
