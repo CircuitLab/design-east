@@ -1,10 +1,14 @@
 {
   "name": "design-east",
+  "scripts": {
+    "start": "DEBUG=* ./node_modules/.bin/node-dev index.js"
+  },
   "dependencies": {
     "tuiter": "~0.2.10",
     "engine.io-client": "~0.6.3",
     "engine.io": "~0.6.3",
     "express": "~3.3.4",
-    "mecab-ffi": "0.0.8"
+    "mecab-ffi": "0.0.8",
+    "node-dev": "~2.0.2"
   }
 }
