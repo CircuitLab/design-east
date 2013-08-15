@@ -17,6 +17,10 @@
 
 
 		public function Preloader():void {	
+			
+			stage.scaleMode = "noScale";
+			stage.align = "TL";
+			
 			_context.applicationDomain = ApplicationDomain.currentDomain;
 
 			_font = new Loader();
