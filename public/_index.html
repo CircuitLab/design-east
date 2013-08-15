@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+<head>
+  <script src="/engine.io.js"></script>
+  <script>
+    var socket = eio.Socket();
+
+    socket.on('message', function(data) {
+      data = JSON.parse(data);
+      console.log(data);
+      document.write('<pre>' + JSON.stringify(data.segments, 2) + '</pre>');
+    });
+  </script>
+</head>
+<body>
+</body>
+</html>
