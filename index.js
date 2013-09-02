@@ -13,7 +13,7 @@ var tuiter = require('tuiter');
 var keys = require('./keys');
 var tu = tuiter(keys);
 
-tu.filter({ track: ['#拡散希望'] }, function(stream) {
+tu.filter({ track: ['#拡散'] }, function(stream) {
   stream.on('tweet', function(tweet) {
     mecab.parse(tweet.text, function(err, result) {
       // console.log(err, result, tweet.text);
