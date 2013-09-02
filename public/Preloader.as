@@ -55,13 +55,7 @@
 			}
 			
 			
-			with(_overlay.graphics) {
-				beginFill(0x0,0.5);
-				drawRect(0,0,1024,768);
-				endFill();
-			}
-			
-			
+			with(_overlay.graphics) { beginFill(0x0,0.5); drawRect(0,0,1024,768); endFill(); }
 			
 			_context.applicationDomain = ApplicationDomain.currentDomain;
 
@@ -93,7 +87,6 @@
 						_col+=_fontSize;
 						if(_col>768-_fontSize) _col=0;//Math.random()*-_fontSize;
 					}
-					
 				}
 			}
 			//JSON.stringify(data.segments, 2)
@@ -101,7 +94,7 @@
 		
 		private function onUpdate(e:Event):void {
 			
-			if(_counter++>3) {
+			if(_counter++>10) {
 				_bitmapData.draw(_fill);
 				_counter = 0;
 			}
