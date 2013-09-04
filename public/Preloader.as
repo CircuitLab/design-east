@@ -15,8 +15,12 @@
 		private var _font:Loader;
 		private var _context :LoaderContext = new LoaderContext();
 		
-		private var _bitmapData:BitmapData = new BitmapData(1024,768,true,0xFF00171c);
+		private var _bitmapData:BitmapData = new BitmapData(1920,1080,true,0xFF00171c);
 		private var _bitmap:Bitmap = new Bitmap(_bitmapData); 
+		
+		private var WIDTH:int = 1920;
+		private var HEIGHT:int = 1080;
+		
 		
 		private var _dotBitmapData:BitmapData = new BitmapData(2,2,true,0xFF00171c);
 		private var _dots:Sprite = new Sprite();
@@ -41,21 +45,10 @@
 			stage.scaleMode = "noScale";
 			stage.align = "TL";
 			
-			with(this.graphics) {
-				beginFill(0xFF00171c);
-				drawRect(0,0,1024,768);
-				endFill();
-			}
+			with(this.graphics) { beginFill(0xFF00171c); drawRect(0,0,WIDTH,HEIGHT); endFill(); }
+			with(_fill.graphics) { beginFill(0xFF00171c,0.01); drawRect(0,0,WIDTH,HEIGHT); endFill(); }
 			
-			
-			with(_fill.graphics) {
-				beginFill(0xFF00171c,0.01);
-				drawRect(0,0,1024,768);
-				endFill();
-			}
-			
-			
-			with(_overlay.graphics) { beginFill(0x0,0.5); drawRect(0,0,1024,768); endFill(); }
+			with(_overlay.graphics) { beginFill(0x0,0.5); drawRect(0,0,WIDTH,HEIGHT); endFill(); }
 			
 			_context.applicationDomain = ApplicationDomain.currentDomain;
 
@@ -81,10 +74,10 @@
 					_text.text = tmp;//+".";
 					_bitmapData.draw(_text,new Matrix(1,0,0,1,_row,_col));
 					_row += _text.width;
-					if(_row>1024) {
+					if(_row>WIDTH) {
 						_row=0;//Math.random()*-_fontSize;
 						_col+=_fontSize;
-						if(_col>768-_fontSize) _col=0;//Math.random()*-_fontSize;
+						if(_col>HEIGHT-_fontSize) _col=0;//Math.random()*-_fontSize;
 					}
 				}
 			}

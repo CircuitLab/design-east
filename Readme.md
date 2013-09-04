@@ -25,4 +25,8 @@ or
     
 ## License
 
+
+$ cap deploy
+http://133.242.21.89:8080/
+
 MIT
