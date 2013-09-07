@@ -127,7 +127,7 @@
 			_text.defaultTextFormat = fmt;
 			_text.text = "";
 			_text.autoSize = TextFieldAutoSize.LEFT;
-			_text.textColor = 0x00FF00;
+			_text.textColor = 0xFFFFF;
 			//
 			
 			//addChild(_text);
