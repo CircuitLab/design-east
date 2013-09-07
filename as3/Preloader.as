@@ -18,22 +18,22 @@
 		private var CreditPNG:Class;
 		private var _credit:Bmp = new Bmp(new CreditPNG);
 		
-		private var _text:TextField;
+		//private var _text:TextField;
 		private var _font:Loader;
 		private var _context :LoaderContext = new LoaderContext();
 		
 		private var WIDTH:int = 1920;
 		private var HEIGHT:int = 1080;
 		
-		private var _bitmapData:BitmapData = new BitmapData(1920,1080,true,0xFF00171c);
-		private var _bitmap:Bitmap = new Bitmap(_bitmapData); 
+		//private var _bitmapData:BitmapData = new BitmapData(1920,1080,true,0xFF00171c);
+		//private var _bitmap:Bitmap = new Bitmap(_bitmapData); 
 		
-		
+		private var _text:TextFieldManager = new TextFieldManager();
 		
 		private var _panel:Panel;
 		
-		private var _dotBitmapData:BitmapData = new BitmapData(2,2,true,0xFF00171c);
-		private var _dots:Sprite = new Sprite();
+		//private var _dotBitmapData:BitmapData = new BitmapData(2,2,true,0xFF00171c);
+		//private var _dots:Sprite = new Sprite();
 		//private var _dotbitmapData:BitmapData = new BitmapData(1024,768,true,0xFF000000);
 		//private var _dotbitmap:Bitmap = new Bitmap(_dotbitmapData); 
 		
@@ -68,38 +68,48 @@
 		}
 		
 		private function on($arr:Array):void {
-			trace($arr);
-			for(var k:int=0; k<$arr.length; k++) {
+			//trace($arr);
+			var len:int = $arr.length;
+			
+			
+			for(var k:int=0; k<len; k++) {
 				//trace($arr[k][7]);
-				var cache:Array = $arr[k];
+				var cache:Array = $arr[(len-1)-k];
 				var tmp:String = cache[0];
 				//var tmp:String = $arr[k][1];
 				if(tmp!=="*") {
+					_text.add(tmp,false);
+					
+					
+					/*
 					if(cache[1]=="名詞"&&tmp.length>1) {
 						_text.textColor = 0xFFFFFF;
 					}
 					else {
 						_text.textColor = 0x777777;
 					}
-					_text.text = tmp;//+".";
-					_bitmapData.draw(_text,new Matrix(1,0,0,1,_row,_col));
+					
+					//_text.text = tmp;//+".";
+					//_bitmapData.draw(_text,new Matrix(1,0,0,1,_row,_col));
 					_row += _text.width;
 					if(_row>WIDTH) {
 						_row=0;//Math.random()*-_fontSize;
 						_col+=_fontSize;
 						if(_col>HEIGHT-_fontSize) _col=0;//Math.random()*-_fontSize;
 					}
+					*/
 				}
 			}
 			//JSON.stringify(data.segments, 2)
 		}
 		
 		private function onUpdate(e:Event):void {
+			_text.onUpdate();
 			
-			if(_counter++>10) {
+			//if(_counter++>10) {
 				//_bitmapData.draw(_fill);
-				_counter = 0;
-			}
+				//_counter = 0;
+			//}
 		}
 		
 		
@@ -117,27 +127,29 @@
 			}
 			trace("</font>");
 			
-			_text = new TextField();
 			
-			var fmt:TextFormat = new TextFormat();
-			fmt.font="A1Mincho"; // AxisStd-Light //"AxisStd-Light"; // Bold
-			fmt.size=_fontSize;
+			
+			//_text = new TextField();
+			
+			//var fmt:TextFormat = new TextFormat();
+			//fmt.font="A1Mincho"; // AxisStd-Light //"AxisStd-Light"; // Bold
+			//fmt.size=_fontSize;
 			//fmt.color=0xFFFFFF;
-			_text.embedFonts = true;
-			_text.defaultTextFormat = fmt;
-			_text.text = "";
-			_text.autoSize = TextFieldAutoSize.LEFT;
-			_text.textColor = 0xFFFFF;
+			//_text.embedFonts = true;
+			//_text.defaultTextFormat = fmt;
+			//_text.text = "";
+			//_text.autoSize = TextFieldAutoSize.LEFT;
+			//_text.textColor = 0xFFFFF;
 			//
 			
-			//addChild(_text);
+			addChild(_text);
 			
 			ExternalInterface.addCallback("emit",on);
 			
-			addChild(_bitmap);
+			//addChild(_bitmap);
 			
-			_dotBitmapData.setPixel32(0,0,0x33000000);
-			_dotBitmapData.setPixel32(1,1,0x99000000);
+			//_dotBitmapData.setPixel32(0,0,0x33000000);
+			//_dotBitmapData.setPixel32(1,1,0x99000000);
 			
 			addChild(_credit);
 			_credit.x = 22;
@@ -163,6 +175,9 @@
 			_overlay.visible = false;
 			
 			this.addEventListener(Event.ENTER_FRAME,onUpdate);
+			
+			//_text.add("はじめ");
+			//_text.add("まして");
 			
 			
 		}
