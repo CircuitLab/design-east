@@ -20,6 +20,14 @@
 	}
 	-->
 </style>
+ <script src="/engine.io.js"></script>
+<script>
+var socket = eio.Socket();
+socket.on('message', function(data) {
+	data = JSON.parse(data);
+	console.log(data.segments);
+});
+</script>
 <body>
 	<div id="container">
 		<p><a href="./index1.html">DAY1</a></p>

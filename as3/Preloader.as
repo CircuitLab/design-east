@@ -228,7 +228,7 @@
 		private function onUpdate(e:Event):void {
 			_text.onUpdate();
 		
-			if(_counter++>30) {//*20) {
+			if(_counter++>30*10) {
 				_type =!_type;
 				_text.on(_type); 
 				_panel.on(_type);
@@ -299,7 +299,7 @@
 			_overlay.visible = false;
 			
 			this.addEventListener(Event.ENTER_FRAME,onUpdate);
-			
+			/*
 			on([
 				["ファッション","名詞"],
 				["は","助詞"],
@@ -316,9 +316,9 @@
 				["04","名詞"],
 				["場","名詞"],
 				["へ","助詞"],
-				["の","助詞"],
-				["愛","名詞"]
+				["の","助詞"]
 			]);
+			*/
 		}
 	}
 };
