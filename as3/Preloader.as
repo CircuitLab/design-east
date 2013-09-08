@@ -66,6 +66,8 @@
 			_font = new Loader();
 			(_font.contentLoaderInfo).addEventListener(Event.COMPLETE,onComplete);
 			_font.load(new URLRequest("fonts/A1Mincho.swf"),_context);
+			
+			ExternalInterface.call("de04.intialize");
 		}
 		
 		private function on($arr:Array):void {
@@ -182,7 +184,7 @@
 			//_text.add("はじめ");
 			//_text.add("まして");
 			
-			ExternalInterface.call("de04.intialize");
+			
 		}
 	}
 };

@@ -155,7 +155,7 @@
 						tf.visible = true;
 
 						if(_on) {
-							tf.textColor = _types[k]?0x666666:0xFFFFFF;
+							tf.textColor = _types[k]?0xFFFFFF:0x666666;
 						}
 						
 						tf.text = _words[k];
