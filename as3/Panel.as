@@ -9,6 +9,8 @@
     import flash.external.*;
 	import flash.geom.*;
 	
+	
+	import mizt.Mizt;
 	import mizt.display.Bmp;
 	
     public class Panel extends Sprite {
@@ -49,12 +51,19 @@
 		public function on($b:Boolean=false):void {
 			
 			if($b) {
-				_label1.alpha = 0;
-				_label2.alpha = 1;
+				//_label1.alpha = 0;
+				//_label2.alpha = 1;
+				
+				Mizt.addTween(_label1,{alpha:0,time:0.8});
+				Mizt.addTween(_label2,{alpha:1,time:0.8});
+				
 			}
 			else {
-				_label1.alpha = 1;
-				_label2.alpha = 0;
+				//_label1.alpha = 1;
+				//_label2.alpha = 0;
+				
+				Mizt.addTween(_label1,{alpha:1,time:0.8});
+				Mizt.addTween(_label2,{alpha:0,time:0.8});
 			}
 			
 		}
@@ -81,7 +90,7 @@
 			with(_label2.graphics) { beginFill(0xFFFFFF),drawRect(0,0,255,32),endFill(); }
 			
 			addChild(_base);
-			
+			_base.x = _logo.x + 2;
 			_base.y = _logo.y + _logo.height + 35;
 			
 			addChild(_label1);

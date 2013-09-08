@@ -70,46 +70,165 @@
 			ExternalInterface.call("de04.intialize");
 		}
 		
+		private var japanes:RegExp = /[ぁ-ん一-龠ァ-ヾー]/g; // 日本語のみ
+		private var kanji:RegExp   = /[一-龠]/g;
+		
+		private var english:Array = [
+			"topophilia",
+			"design",
+			"east",
+			"designeast",
+			"anne",
+			"mieke",
+			"eggenkamp",
+			"kirstie",
+			"van",
+			"noort",
+			"itay",
+			"ohaly",
+			"thomas",
+			"vailly",
+			"kunlé",
+			"adeyemi",
+			"nlé",
+			"tokyo",
+			"mom",
+			"oy",
+			"arnout",
+			"visser",
+			"beyer",
+			"pyjamammal",
+			"aom",
+			"neve",
+			"ui",
+			"nono",
+			"fantastic",
+			"market"		
+		]; 
+		
+		
 		private function on($arr:Array):void {
 			//trace($arr);
 			var len:int = $arr.length;
 			
 			
 			for(var k:int=0; k<len; k++) {
+			
+				var uid:int = (len-1)-k;
 				//trace($arr[k][7]);
-				var cache:Array = $arr[(len-1)-k];
+				var cache:Array = $arr[uid];
 				var tmp:String = cache[0];
 				//var tmp:String = $arr[k][1];
 				if(tmp!=="*") {
-					_text.add(tmp,(cache[1]=="名詞"&&tmp.length>1)?true:false);
 					
+					var key:Boolean = false;
 					
-					/*
-					if(cache[1]=="名詞"&&tmp.length>1) {
-						_text.textColor = 0xFFFFFF;
+					if((cache[1]=="名詞")) {
+					
+						if(tmp.length==1&&tmp.search(kanji)>=0) {
+							key = true;
+						}
+						else if(tmp.search(japanes)>=0) {
+							
+							if(tmp.length==1&&tmp=="の") {	
+								if(uid-4>=0&&uid+3<len) {
+									if($arr[uid-4][0]=="ファッション"&&$arr[uid-3][0]=="は"&&$arr[uid-2][0]=="更新"&&$arr[uid-1][0]=="できる"&&$arr[uid+1][0]=="か"&&$arr[uid+2][0]=="?"&&$arr[uid+3][0]=="会議") key = true;
+									else if($arr[uid-4][0]=="ファッション"&&$arr[uid-3][0]=="は"&&$arr[uid-2][0]=="更新"&&$arr[uid-1][0]=="できる"&&$arr[uid+1][0]=="か"&&$arr[uid+2][0]=="？"&&$arr[uid+3][0]=="会議") key = true;
+								}
+							}
+							else {
+								key = true;
+							}
+						}
+						else {
+							var lowercase:String = tmp.toLowerCase();
+							
+							if(lowercase=="04"&&(uid-1>=0)&&($arr[uid-1][0].toLowerCase()=="designeast")) {
+								key = true;
+							}
+							if(lowercase=="?"&&(uid-6>=0)&&(uid+1<len)) {
+								if($arr[uid-6][0]=="ファッション"&&$arr[uid-5][0]=="は"&&$arr[uid-4]=="更新"&&$arr[uid-3][0]=="できる"&&$arr[uid-2][0]=="の"&&$arr[uid-1][0]=="か"&&$arr[uid+1][0]=="会議") key = true;
+							}
+							else if(tmp.length==1) {
+								if(lowercase=="c"&&(uid+1<len)&&($arr[uid+1][0].toLowerCase()=="-")) key = true;
+								else if(lowercase=="-"&&(uid-1>=0)&&($arr[uid-1][0].toLowerCase()=="c")) key = true;
+							}
+							else {
+								for(var e:int=0; e<english.length; e++) {
+									if(lowercase==english[e]) {
+										key = true;
+									}
+								}
+							}
+						}
 					}
-					else {
-						_text.textColor = 0x777777;
+					else if(cache[1]=="助詞") {
+					
+						if(tmp=="と") {
+							if(uid-1>=0&&uid+1<len) {
+								if($arr[uid-1][0]=="良平"&&$arr[uid+1][0]=="仕事") {
+									key = true;
+								}
+								else if($arr[uid-1][0]=="吉行良平"&&$arr[uid+1][0]=="仕事") {
+									key = true;
+								}
+								else if(($arr[uid-1]=="みそしる")&&$arr[uid+1][0]=="MC") {
+									key = true;
+								}
+								else if(uid-2>=0&&$arr[uid-2][0]=="みそ"&&$arr[uid-1][0]=="しる"&&$arr[uid+1][0]=="MC") {
+									key = true;
+								}
+							}
+						}
+						else if(tmp=="へ") {
+							if(uid-1>=0&&uid+2<len&&$arr[uid-1][0]=="場"&&$arr[uid+1][0]=="の"&&$arr[uid+2][0]=="愛") key = true;
+						}
+						else if(tmp=="の") {
+							if(uid-2>=0&&uid+1<len&&$arr[uid-2][0]=="場"&&$arr[uid-1][0]=="へ"&&$arr[uid+1][0]=="愛") key = true;
+							
+						}
+						else if(tmp=="か") {
+							if(uid-4>=0&&uid+2<len) {
+								if($arr[uid-5][0]=="ファッション"&&$arr[uid-4][0]=="は"&&$arr[uid-3][0]=="更新"&&$arr[uid-2][0]=="できる"&&$arr[uid-1][0]=="の"&&$arr[uid+1][0]=="?"&&$arr[uid+2][0]=="会議") key = true;
+								else if($arr[uid-5][0]=="ファッション"&&$arr[uid-4][0]=="は"&&$arr[uid-3][0]=="更新"&&$arr[uid-2][0]=="できる"&&$arr[uid-1][0]=="の"&&$arr[uid+1][0]=="？"&&$arr[uid+2][0]=="会議") key = true;
+							}
+						}
+						else if(tmp=="は") {
+							if(uid-1>=0&&uid+6<len) {
+								if($arr[uid-1][0]=="ファッション"&&$arr[uid+1][0]=="更新"&&$arr[uid+2][0]=="できる"&&$arr[uid+3][0]=="の"&&$arr[uid+4][0]=="か"&&$arr[uid+5][0]=="?"&&$arr[uid+6][0]=="会議") key = true;
+								else if($arr[uid-1][0]=="ファッション"&&$arr[uid+1][0]=="更新"&&$arr[uid+2][0]=="できる"&&$arr[uid+3][0]=="の"&&$arr[uid+4][0]=="か"&&$arr[uid+5][0]=="？"&&$arr[uid+6][0]=="会議") key = true;
+							}
+						}
+					}
+					else if(cache[1]=="動詞") {
+						if(tmp=="できる") {
+							if(uid-3>=0&&uid+4<len) {
+								if($arr[uid-3][0]=="ファッション"&&$arr[uid-2][0]=="は"&&$arr[uid-1][0]=="更新"&&$arr[uid+1][0]=="の"&&$arr[uid+2][0]=="か"&&$arr[uid+3][0]=="?"&&$arr[uid+4][0]=="会議") key = true;
+								else if($arr[uid-3][0]=="ファッション"&&$arr[uid-2][0]=="は"&&$arr[uid-1][0]=="更新"&&$arr[uid+1][0]=="の"&&$arr[uid+2][0]=="か"&&$arr[uid+3][0]=="？"&&$arr[uid+4][0]=="会議") key = true;
+							}
+						}
+					}
+					else if(cache[1]=="記号") {
+						if(tmp=="々"&&uid-1>=0&&uid+1<len) {
+							if($arr[uid-1][0]=="柳"&&$arr[uid+1][0]=="堂") {
+								key = true;
+							}
+						}
+						else if(tmp=="？"&&uid-6>=0&&uid+1<len) { // 
+							if($arr[uid-6][0]=="ファッション"&&$arr[uid-5][0]=="は"&&$arr[uid-4][0]=="更新"&&$arr[uid-3][0]=="できる"&&$arr[uid-2][0]=="の"&&$arr[uid-1][0]=="か"&&$arr[uid+1][0]=="会議") key = true;
+						}
 					}
 					
-					//_text.text = tmp;//+".";
-					//_bitmapData.draw(_text,new Matrix(1,0,0,1,_row,_col));
-					_row += _text.width;
-					if(_row>WIDTH) {
-						_row=0;//Math.random()*-_fontSize;
-						_col+=_fontSize;
-						if(_col>HEIGHT-_fontSize) _col=0;//Math.random()*-_fontSize;
-					}
-					*/
+					_text.add(tmp,(key)?true:false);
+					
 				}
 			}
-			//JSON.stringify(data.segments, 2)
 		}
 		
 		private function onUpdate(e:Event):void {
 			_text.onUpdate();
 		
-			if(_counter++>30*20) {
+			if(_counter++>30) {//*20) {
 				_type =!_type;
 				_text.on(_type); 
 				_panel.on(_type);
@@ -181,10 +300,25 @@
 			
 			this.addEventListener(Event.ENTER_FRAME,onUpdate);
 			
-			//_text.add("はじめ");
-			//_text.add("まして");
-			
-			
+			on([
+				["ファッション","名詞"],
+				["は","助詞"],
+				["更新","名詞"],
+				["できる","動詞"],
+				["の","名詞"],
+				["か","助詞"],
+				["？","記号"],
+				["会議","名詞"],
+				["柳","名詞"],
+				["々","記号"],
+				["堂","名詞"],
+				["designeast","名詞"],
+				["04","名詞"],
+				["場","名詞"],
+				["へ","助詞"],
+				["の","助詞"],
+				["愛","名詞"]
+			]);
 		}
 	}
 };
