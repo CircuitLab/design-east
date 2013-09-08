@@ -108,7 +108,7 @@
 			_text.onUpdate();
 		
 			if(_counter++>30*20) {
-				_type !=_type;
+				_type =!_type;
 				_text.on(_type); 
 				_panel.on(_type);
 				_counter = 0;

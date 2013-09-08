@@ -27,6 +27,10 @@
 </style>
   <script src="/engine.io.js"></script>
   <script>
+  	window.de04 = {};
+  	window.de04.isInit = false;
+  	window.de04.intialize = function () { window.de04.isInit = true; }
+  	
     var socket = eio.Socket();
     socket.on('message', function(data) {
       data = JSON.parse(data);
