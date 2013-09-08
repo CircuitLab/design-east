@@ -111,7 +111,7 @@
 			if(_on) {
 				for(var k:int=0; k<MAX_NUM; k++) {
 					tf = _tf[k];
-					tf.textColor = _types[k]?0x666666:0xFFFFFF;
+					tf.textColor = _types[k]?0xFFFFFF:0x666666;
 				}
 			}
 			else {
