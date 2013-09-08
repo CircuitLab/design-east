@@ -18,7 +18,8 @@
     	private var TEXT_HEIGHT:int = 24;
     	
     	private var MAX_NUM:uint = 4800;
-    	private var words:Array = [];
+    	private var _words:Array = [];
+    	private var _types:Array = [];
     	private var _tf:Array = [];
     	
     	//private var _panel:Panel = new Panel(1);
@@ -31,10 +32,15 @@
 		public function add($word:String,$type:Boolean=false):void {
 			
 			for(var k:int=1; k<MAX_NUM; k++) {
-				words[(MAX_NUM-1)-k] = words[(MAX_NUM-1)-k-1];
+			
+				var tmp:int = (MAX_NUM-1)-k;
+				_words[tmp] = _words[tmp-1];
+				_types[tmp] = _types[tmp-1];
+				
 			}
 			
-			words[0] = $word;
+			_words[0] = $word;
+			_types[0] = $type;
 			
 		}
 		
@@ -65,7 +71,8 @@
 			fmt.letterSpacing = 3;
 			
 			for(var k:int=0; k<MAX_NUM; k++) {
-				words.push("");
+				_words.push("");
+				_types.push(false);
 				
 				_tf.push(new TextField());
 				var tf:TextField = _tf[k];
@@ -73,7 +80,7 @@
 				addChild(tf);
 				tf.embedFonts = true;
 				tf.defaultTextFormat = fmt;
-				tf.text = words[k];
+				tf.text = _words[k];
 				tf.selectable = false;
 				tf.autoSize = TextFieldAutoSize.LEFT;
 				//tf.textColor =(k&1)?0x666666:0xFFFFFF;
@@ -95,7 +102,25 @@
 			
 		}
 		
+		private var _on:Boolean = false;
 		
+		public function on($type:Boolean = false):void {
+			_on = $type;
+			var tf:TextField;
+			
+			if(_on) {
+				for(var k:int=0; k<MAX_NUM; k++) {
+					tf = _tf[k];
+					tf.textColor = _types[k]?0x666666:0xFFFFFF;
+				}
+			}
+			else {
+				for(var k:int=0; k<MAX_NUM; k++) {
+					tf = _tf[k];
+					tf.textColor = 0x666666;
+				}
+			}
+		}
 		
 		public function onUpdate(e:Event=null):void {
 			
@@ -128,14 +153,16 @@
 					}
 					else {
 						tf.visible = true;
+
+						if(_on) {
+							tf.textColor = _types[k]?0x666666:0xFFFFFF;
+						}
 						
-						//tf.textColor = (tf.textColor==0xFFFFFF)?0x666666:0xFFFFFF;
-						
-						tf.text = words[k];
+						tf.text = _words[k];
 						tf.selectable = false;
 						tf.x = r;
 						tf.y = c;
-						r+=tf.textWidth+3;
+						r+=tf.textWidth+1;
 						if(r>=WIDTH) {
 							r = 0;
 							c+=(TEXT_HEIGHT+5);

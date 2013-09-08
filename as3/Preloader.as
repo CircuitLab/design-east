@@ -39,6 +39,7 @@
 		
 		private var _overlay:Sprite = new Sprite();
 		
+		private var _type:Boolean = false;
 		private var _counter:int = 0;
 		
 		private var _fill:Sprite = new Sprite();
@@ -78,7 +79,7 @@
 				var tmp:String = cache[0];
 				//var tmp:String = $arr[k][1];
 				if(tmp!=="*") {
-					_text.add(tmp,false);
+					_text.add(tmp,(cache[1]=="名詞"&&tmp.length>1)?true:false);
 					
 					
 					/*
@@ -105,11 +106,13 @@
 		
 		private function onUpdate(e:Event):void {
 			_text.onUpdate();
-			
-			//if(_counter++>10) {
-				//_bitmapData.draw(_fill);
-				//_counter = 0;
-			//}
+		
+			if(_counter++>30*20) {
+				_type !=_type;
+				_text.on(_type); 
+				_panel.on(_type);
+				_counter = 0;
+			}
 		}
 		
 		

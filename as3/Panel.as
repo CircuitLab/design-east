@@ -46,6 +46,19 @@
 		private var _base:Sprite = new Sprite();
 		
 		
+		public function on($b:Boolean=false):void {
+			
+			if($b) {
+				_label1.alpha = 1;
+				_label2.alpha = 0;
+			}
+			else {
+				_label1.alpha = 0;
+				_label2.alpha = 1;
+			}
+			
+		}
+		
 		public function Panel($day:int):void {	
 			
 			if($day==1) {
