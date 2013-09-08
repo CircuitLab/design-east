@@ -70,8 +70,10 @@
 			ExternalInterface.call("de04.intialize");
 		}
 		
-		private var japanes:RegExp = /[ぁ-ん一-龠ァ-ヾー]/g; // 日本語のみ
+		private var japanes:RegExp = /[ぁ-ん一-龠ァ-ヾー]/g;
 		private var kanji:RegExp   = /[一-龠]/g;
+		private var number:RegExp   = /[0-9]/g;
+		
 		
 		private var english:Array = [
 			"topophilia",
@@ -125,16 +127,31 @@
 					
 					if((cache[1]=="名詞")) {
 					
-						if(tmp.length==1&&tmp.search(kanji)>=0) {
-							key = true;
+						
+						if(tmp.length==1&&tmp=="/") {
+							if(uid-1>=0&&uid+1<len&&(($arr[uid-1][0].search(number)>=0))&&(($arr[uid+1][0].search(number)>=0))) {
+								key = true;
+							}
+							
+							
+						}
+						else if(tmp.length==1&&tmp.search(kanji)>=0) {
+							key = false;
+							if(tmp=="時") key = true;
+							else if(tmp=="分") key = true;
+							else if(tmp=="前") key = true;
 						}
 						else if(tmp.search(japanes)>=0) {
+							
 							
 							if(tmp.length==1&&tmp=="の") {	
 								if(uid-4>=0&&uid+3<len) {
 									if($arr[uid-4][0]=="ファッション"&&$arr[uid-3][0]=="は"&&$arr[uid-2][0]=="更新"&&$arr[uid-1][0]=="できる"&&$arr[uid+1][0]=="か"&&$arr[uid+2][0]=="?"&&$arr[uid+3][0]=="会議") key = true;
 									else if($arr[uid-4][0]=="ファッション"&&$arr[uid-3][0]=="は"&&$arr[uid-2][0]=="更新"&&$arr[uid-1][0]=="できる"&&$arr[uid+1][0]=="か"&&$arr[uid+2][0]=="？"&&$arr[uid+3][0]=="会議") key = true;
 								}
+							}
+							if(tmp.length<=3&&tmp.search(kanji)==-1) {
+								key = false;
 							}
 							else {
 								key = true;
@@ -158,6 +175,11 @@
 									if(lowercase==english[e]) {
 										key = true;
 									}
+								}
+								
+								if(lowercase=="designeast") {
+									if((uid-1>=0)&&[uid-1][0]=="@") key = false;
+									if((uid+1>=0)&&[uid+1][0]==".") key = false;
 								}
 							}
 						}
@@ -217,6 +239,23 @@
 						else if(tmp=="？"&&uid-6>=0&&uid+1<len) { // 
 							if($arr[uid-6][0]=="ファッション"&&$arr[uid-5][0]=="は"&&$arr[uid-4][0]=="更新"&&$arr[uid-3][0]=="できる"&&$arr[uid-2][0]=="の"&&$arr[uid-1][0]=="か"&&$arr[uid+1][0]=="会議") key = true;
 						}
+					}
+					
+					
+					if(cache[2]=="数") {
+						key = true;
+						
+						if(tmp=="04") {
+							if(uid-2>=0) {
+								//key = true;
+								if($arr[uid-2][0]=="#") key = false;
+								else if($arr[uid-2][0]=="@") key = false;
+							}
+						}
+						else if((uid-1>=0&&($arr[uid-1][0].search(japanes)>=0))||(uid+1<len&&($arr[uid+1][0].search(japanes)>=0))) {
+							key = true;
+						}
+						
 					}
 					
 					_text.add(tmp,(key)?true:false);
