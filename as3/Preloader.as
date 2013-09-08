@@ -182,7 +182,7 @@
 			//_text.add("はじめ");
 			//_text.add("まして");
 			
-			
+			ExternalInterface.call("de04.intialize");
 		}
 	}
 };
