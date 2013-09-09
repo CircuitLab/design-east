@@ -31,6 +31,8 @@
 		
 		public function add($word:String,$type:Boolean=false):void {
 			
+			isUpdate = true;
+			
 			for(var k:int=1; k<MAX_NUM; k++) {
 			
 				var tmp:int = (MAX_NUM-1)-k;
@@ -41,27 +43,18 @@
 			
 			_words[0] = $word;
 			_types[0] = $type;
-			
+			/*
+			var tf:TextField;
+			for(var k:int=0; k<MAX_NUM; k++) {
+				tf = _tf[k];
+				tf.text = _words[k];
+			}
+			*/
 		}
 		
 		
-		public function TextFieldManager():void {	
-			//stage.scaleMode = "noScale";
-			//stage.align = "TL";
-			
-			//with(this.graphics) { beginFill(0xFF00171c); drawRect(0,0,WIDTH,HEIGHT); endFill(); }
-			
-			
-			///_context.applicationDomain = ApplicationDomain.currentDomain;
-
-			//_font = new Loader();
-			//(_font.contentLoaderInfo).addEventListener(Event.COMPLETE,onComplete);
-			//_font.load(new URLRequest("fonts/A1Mincho.swf"),_context);
-			
-		//}
+		public function TextFieldManager():void {
 		
-		
-		//private function onComplete(e:Event):void {
 			var r:int = 0;
 			var c:int = 0;
 			
@@ -83,29 +76,23 @@
 				tf.text = _words[k];
 				tf.selectable = false;
 				tf.autoSize = TextFieldAutoSize.LEFT;
-				//tf.textColor =(k&1)?0x666666:0xFFFFFF;
 				tf.textColor = 0x666666;
-				tf.x = r;
-				tf.y = c;
-				r+=tf.textWidth;
-				if(r>=WIDTH) {
-					r = 0;
-					c+=TEXT_HEIGHT;
-				}
+				tf.visible = false;
 			}
-			
-			//this.addEventListener(Event.ENTER_FRAME,onUpdate);
-			//addChild(new Stats());
-			//addChild(_panel);
-			//_panel.x = 50;
-			//_panel.y = 400;
-			
 		}
 		
 		private var _on:Boolean = false;
+		private var _off:Boolean = false;
+		private var _blink:int = 0;
+		
+		private var isUpdate:Boolean = false;
 		
 		public function on($type:Boolean = false):void {
+		
+			
+			
 			_on = $type;
+			_blink=0;
 			var tf:TextField;
 			
 			if(_on) {
@@ -124,10 +111,18 @@
 		
 		public function onUpdate(e:Event=null):void {
 			
+			
+			
 			if(_cnt++>20) {
 				_cnt=0;
 				
-				
+				if(_on) {
+					_blink++;
+					_off = false;
+					if(_blink>=2&&_blink<=4) {
+						_off = true;
+					}
+				}
 				/*
 				var offset:int = (int)(10+Math.random()*40);
 				
@@ -144,25 +139,26 @@
 				var c:int = 0;
 				var tf:TextField;
 				
+				//if(isUpdate==false) return;			
+				//isUpdate = false;
+				
 				for(var k:int=0; k<MAX_NUM; k++) {
 					
 					tf = _tf[k];
 					
-					if(c>HEIGHT) {
+					if(_words[k]==""||c>HEIGHT) {
 						tf.visible = false;
 					}
 					else {
 						tf.visible = true;
 
-						if(_on) {
+						if(_on&&!_off) {
 							tf.textColor = _types[k]?0xFFFFFF:0x666666;
 						}
-						
 						tf.text = _words[k];
-						tf.selectable = false;
 						tf.x = r;
 						tf.y = c;
-						r+=tf.textWidth+1;
+						r+=tf.textWidth+2;
 						if(r>=WIDTH) {
 							r = 0;
 							c+=(TEXT_HEIGHT+5);

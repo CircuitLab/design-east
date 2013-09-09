@@ -25,11 +25,10 @@
 		private var WIDTH:int = 1920;
 		private var HEIGHT:int = 1080;
 		
-		//private var _bitmapData:BitmapData = new BitmapData(1920,1080,true,0xFF00171c);
-		//private var _bitmap:Bitmap = new Bitmap(_bitmapData); 
+		private var _bitmapData:BitmapData = new BitmapData(1920,1080,true,0xFF00171c);
+		private var _bitmap:Bitmap = new Bitmap(_bitmapData); 
 		
 		private var _text:TextFieldManager = new TextFieldManager();
-		
 		private var _panel:Panel;
 		
 		//private var _dotBitmapData:BitmapData = new BitmapData(2,2,true,0xFF00171c);
@@ -57,7 +56,7 @@
 			stage.align = "TL";
 			
 			with(this.graphics) { beginFill(0xFF00171c); drawRect(0,0,WIDTH,HEIGHT); endFill(); }
-			with(_fill.graphics) { beginFill(0xFF00171c,0.01); drawRect(0,0,WIDTH,HEIGHT); endFill(); }
+			with(_fill.graphics) { beginFill(0x00171c); drawRect(0,0,WIDTH,HEIGHT); endFill(); }
 			
 			with(_overlay.graphics) { beginFill(0x0,0.5); drawRect(0,0,WIDTH,HEIGHT); endFill(); }
 			
@@ -67,7 +66,7 @@
 			(_font.contentLoaderInfo).addEventListener(Event.COMPLETE,onComplete);
 			_font.load(new URLRequest("fonts/A1Mincho.swf"),_context);
 			
-			ExternalInterface.call("de04.intialize");
+			
 		}
 		
 		private var japanes:RegExp = /[ぁ-ん一-龠ァ-ヾー]/g;
@@ -107,7 +106,6 @@
 			"fantastic",
 			"market"		
 		]; 
-		
 		
 		private function on($arr:Array):void {
 			//trace($arr);
@@ -264,21 +262,52 @@
 			}
 		}
 		
+		//private var dir:Number = 1;
+		private var dir:Number = 1;
+		
 		private function onUpdate(e:Event):void {
 			_text.onUpdate();
+			//_fill.alpha = Math.random();
 		
+			
+			
+			
 			if(_counter++>30*10) {
 				_type =!_type;
 				_text.on(_type); 
 				_panel.on(_type);
 				_counter = 0;
+				_fill.visible = false;
+				
 			}
+			
+			/*
+			if(_fill.visible = true) {
+			if(_counter%3==0) {
+				_fill.alpha+=0.2*dir;
+					if(_fill.alpha>1) {
+						_fill.alpha = 1;
+						dir = -1;
+					}
+					if(_fill.alpha<0) {
+						_fill.alpha = 0;
+						dir = 1;
+					}
+			
+				}
+			}
+			*/
+			
+			
+			
+			//_bitmap.draw();
+		
+			//_bitmap.alpha -= 0.1;
+			//if(_bitmap.alpha==0) _bitmap.alpha=0;
 		}
 		
 		
 		private function onComplete(e:Event):void {
-			
-			
 			
 			trace("onComplete");
 			//new getClass();
@@ -306,13 +335,16 @@
 			//
 			
 			addChild(_text);
+			addChild(_fill);
+			_fill.visible = false;
 			
-			ExternalInterface.addCallback("emit",on);
 			
-			//addChild(_bitmap);
+			addChild(_bitmap);
+			_bitmap.visible = false;
 			
 			//_dotBitmapData.setPixel32(0,0,0x33000000);
 			//_dotBitmapData.setPixel32(1,1,0x99000000);
+			//addChild(_bitmap);
 			
 			addChild(_credit);
 			_credit.x = 22;
@@ -338,26 +370,12 @@
 			_overlay.visible = false;
 			
 			this.addEventListener(Event.ENTER_FRAME,onUpdate);
-			/*
-			on([
-				["ファッション","名詞"],
-				["は","助詞"],
-				["更新","名詞"],
-				["できる","動詞"],
-				["の","名詞"],
-				["か","助詞"],
-				["？","記号"],
-				["会議","名詞"],
-				["柳","名詞"],
-				["々","記号"],
-				["堂","名詞"],
-				["designeast","名詞"],
-				["04","名詞"],
-				["場","名詞"],
-				["へ","助詞"],
-				["の","助詞"]
-			]);
-			*/
+			
+			addChild(new Stats());
+			
+			ExternalInterface.addCallback("emit",on);
+			ExternalInterface.call("de04.intialize");
+			
 		}
 	}
 };
