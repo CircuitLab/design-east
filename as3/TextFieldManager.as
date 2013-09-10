@@ -9,16 +9,17 @@
     import flash.external.*;
 	import flash.geom.*;
 	
-
     public class TextFieldManager extends Sprite {
     
-    	private var WIDTH:int  = 1920;
-    	private var HEIGHT:int = 1080;
+    	private var WIDTH:int  = 1280;
+    	private var HEIGHT:int = 800;
     	
     	private var TEXT_HEIGHT:int = 24;
     	
-    	private var MAX_NUM:uint = 4800;
+    	private var MAX_NUM:uint = 2048;
     	private var _words:Array = [];
+    	private var _cache:Array = []; // cache
+    	
     	private var _types:Array = [];
     	private var _tf:Array = [];
     	
@@ -79,6 +80,11 @@
 				tf.textColor = 0x666666;
 				tf.visible = false;
 			}
+			
+			
+			for(var i:int=0; i<MAX_NUM; i++) {
+				this.add("あ");
+			}
 		}
 		
 		private var _on:Boolean = false;
@@ -95,10 +101,12 @@
 			_blink=0;
 			var tf:TextField;
 			
-			if(_on) {
+			if(_on) { // lock
+				
 				for(var k:int=0; k<MAX_NUM; k++) {
 					tf = _tf[k];
 					tf.textColor = _types[k]?0xFFFFFF:0x666666;
+					_cache[k] = _words[k];
 				}
 			}
 			else {
@@ -113,7 +121,7 @@
 			
 			
 			
-			if(_cnt++>20) {
+			if(_cnt++>6) {
 				_cnt=0;
 				
 				if(_on) {
@@ -135,8 +143,8 @@
 				*/
 				
 				
-				var r:int = 0;
-				var c:int = 0;
+				var r:int = -6;
+				var c:int = -13;
 				var tf:TextField;
 				
 				//if(isUpdate==false) return;			
@@ -153,26 +161,26 @@
 						tf.visible = true;
 
 						if(_on&&!_off) {
-							tf.textColor = _types[k]?0xFFFFFF:0x666666;
+							tf.textColor = (Math.random()>0.5)?0xFFFFFF:0x666666;
 						}
-						tf.text = _words[k];
+						tf.text = (_on)?_cache[k]:_words[k];
 						tf.x = r;
 						tf.y = c;
 						r+=tf.textWidth+2;
 						if(r>=WIDTH) {
-							r = 0;
+							r = -6;
 							c+=(TEXT_HEIGHT+5);
 						}
 					}
 				}
 			}
-			else if(_cnt%5==10) {
+			//else if(_cnt%5==10) {
 				//var tf:TextField
 				//for(var k:int=0; k<MAX_NUM; k++) {
 					//tf = _tf[k];	
 					//tf.textColor = (tf.textColor==0xFFFFFF)?0x666666:0xFFFFFF;
 				//}
-			}
+			//}
 		}
 		
 	}

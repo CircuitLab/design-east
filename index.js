@@ -14,7 +14,7 @@ app.set('port', process.env.PORT || 3000);
 app.use(express.static(__dirname + '/public'));
 
 io.on('connection', function (socket) {
-  //console.log("connection");
+  console.log("connection");
   tu.search({q:'#de04'}, function(error, tweet){
   if(error) throw error;
   var num = tweet["statuses"].length;
@@ -36,10 +36,10 @@ tu.filter({ track: ['#拡散'] }, function(stream) {
       // console.log(err, result, tweet.text);
       tweet.segments = result;
       Object.keys(io.clients).forEach(function(key) {
-        io.clients[key].send(JSON.stringify(tweet));
+        //io.clients[key].send(JSON.stringify(tweet));
       });
     });
-  }); 
+  });
 });
 
 server.listen(app.get('port'), function() {

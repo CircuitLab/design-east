@@ -22,10 +22,10 @@
 		private var _font:Loader;
 		private var _context :LoaderContext = new LoaderContext();
 		
-		private var WIDTH:int = 1920;
-		private var HEIGHT:int = 1080;
+		private var WIDTH:int = 1280;
+		private var HEIGHT:int = 800;
 		
-		private var _bitmapData:BitmapData = new BitmapData(1920,1080,true,0xFF00171c);
+		private var _bitmapData:BitmapData = new BitmapData(WIDTH,HEIGHT,true,0xFF00171c);
 		private var _bitmap:Bitmap = new Bitmap(_bitmapData); 
 		
 		private var _text:TextFieldManager = new TextFieldManager();
@@ -281,9 +281,9 @@
 				
 			}
 			
-			/*
+			
 			if(_fill.visible = true) {
-			if(_counter%3==0) {
+			if(_counter%2==0) {
 				_fill.alpha+=0.2*dir;
 					if(_fill.alpha>1) {
 						_fill.alpha = 1;
@@ -296,7 +296,6 @@
 			
 				}
 			}
-			*/
 			
 			
 			
@@ -319,20 +318,7 @@
 			}
 			trace("</font>");
 			
-			
-			
-			//_text = new TextField();
-			
-			//var fmt:TextFormat = new TextFormat();
-			//fmt.font="A1Mincho"; // AxisStd-Light //"AxisStd-Light"; // Bold
-			//fmt.size=_fontSize;
-			//fmt.color=0xFFFFFF;
-			//_text.embedFonts = true;
-			//_text.defaultTextFormat = fmt;
-			//_text.text = "";
-			//_text.autoSize = TextFieldAutoSize.LEFT;
-			//_text.textColor = 0xFFFFF;
-			//
+
 			
 			addChild(_text);
 			addChild(_fill);
@@ -364,7 +350,7 @@
 			}
 			addChild(_panel);
 			_panel.x = 50;
-			_panel.y = 400;
+			_panel.y = (800-_panel.height)>>1;
 			
 			addChild(_overlay);
 			_overlay.visible = false;
