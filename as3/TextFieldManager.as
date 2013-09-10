@@ -4,6 +4,7 @@
 	import flash.net.*;
 	import flash.events.*;
 	import flash.text.*;
+	import flash.media.*;
 	import flash.system.LoaderContext;
 	import flash.system.ApplicationDomain;
     import flash.external.*;
@@ -18,9 +19,26 @@
     	
     	private var MAX_NUM:uint = 2048;
     	private var _words:Vector.<String> = new Vector.<String>(MAX_NUM,true);
-    	private var _cache:Vector.<String> = new Vector.<String>(MAX_NUM,true);
-    	
     	private var _types:Vector.<Boolean> = new Vector.<Boolean>(MAX_NUM,true);
+    	
+    	private var _exTypes:Vector.<Boolean> = new Vector.<Boolean>(MAX_NUM,true);
+    	
+    	private var _cacheCount:int = 0; 
+    	private var _cacheWords:Array = [];
+    	private var _cacheTypes:Array = [];
+    	
+    	
+    	[Embed(source="recv.mp3")]
+		private var RecvSnd:Class;
+	    private var _recv:Sound = new RecvSnd();
+	
+		[Embed(source="swap.mp3")]
+		private var SwapSnd:Class;
+	    private var _swap:Sound = new SwapSnd();
+	
+	
+	
+    	
     	private var _tf:Vector.<TextField> = new Vector.<TextField>(MAX_NUM,true);
     	
     	private var _bar:int = 0;
@@ -31,29 +49,64 @@
 		private var _context :LoaderContext = new LoaderContext();
 		private var _cnt:int = 0;
 		
+		public function begin():void {
+			isUpdate = false;
+			_cacheCount = 0;
+			for(var k:int=0; k<_cacheWords.length; k++) {
+				_cacheWords[k] = "";
+				_cacheTypes[k] = false;
+			}	
+		}
+		
+		
 		
 		public function add($word:String,$type:Boolean=false):void {
 			
-			isUpdate = true;
-			
-			for(var k:int=0; k<MAX_NUM-1; k++) {
-			
-				var tmp:int = (MAX_NUM-1)-k;
-				_words[tmp] = _words[tmp-1];
-				_types[tmp] = _types[tmp-1];
-				
+			if(_cacheWords.length<=_cacheCount) {
+				_cacheWords.push($word);
+				_cacheTypes.push($type);
 			}
+			else {
+				_cacheWords[_cacheCount] = $word;
+				_cacheTypes[_cacheCount] = $type;
+			}	
 			
-			_words[0] = $word;
-			_types[0] = $type;
-			/*
-			var tf:TextField;
-			for(var k:int=0; k<MAX_NUM; k++) {
-				tf = _tf[k];
-				tf.text = _words[k];
-			}
-			*/
+			_cacheCount++;
 		}
+		
+		
+		public function end():void {
+			
+			var cnt:int = _cacheCount;
+			
+			
+			var overflow:int = 0;
+			if(cnt>=MAX_NUM) overflow = cnt-MAX_NUM;
+			
+			
+			
+			
+			var k:int = 0;
+			var tmp:int = 0;
+			
+			if(overflow==0) {	
+				for(k=0; k<MAX_NUM-cnt; k++) {
+					tmp = (MAX_NUM-cnt-1);
+					_words[tmp] = _words[tmp-1];
+					_types[tmp] = _types[tmp-1];
+				}
+			}
+			
+			for(k=overflow; k<cnt; k++) {
+				tmp = (cnt-1)-(k-overflow);
+				_words[k-overflow] = _cacheWords[tmp];
+				_types[k-overflow] = _cacheTypes[tmp];
+			}
+			
+			
+			isUpdate = true;
+		}
+		
 		
 		
 		public function TextFieldManager():void {
@@ -68,12 +121,14 @@
 			
 			for(var k:int=0; k<MAX_NUM; k++) {
 				_words[k] = "";
+				
 				_types[k] = false;
+				_exTypes[k] = false;
 				
 				_tf[k] = new TextField();
 				
 				var tf:TextField = _tf[k];
-				addChild(tf);
+				
 				
 				tf.embedFonts = true;
 				tf.defaultTextFormat = fmt;
@@ -82,13 +137,14 @@
 				tf.autoSize = TextFieldAutoSize.LEFT;
 				tf.textColor = 0x666666;
 				tf.visible = false;
+				
+				addChild(tf);
 			}
 			
-			
-			for(var i:int=0; i<MAX_NUM; i++) {
-				this.add("あ",(Math.random()>0.5)?true:false);
-			}
 		}
+		
+		
+		
 		
 		private var _on:Boolean = false;
 		private var _off:Boolean = false;
@@ -98,25 +154,23 @@
 		
 		public function on($type:Boolean = false):void {
 		
-			
+			trace("on\n");
 			
 			_on = $type;
 			_blink=0;
 			var tf:TextField;
+			var k:int=0;
+			
 			
 			if(_on) { // lock
 				_bar = 0;
-				for(var k:int=0; k<MAX_NUM; k++) {
+				for(k=0; k<MAX_NUM; k++) {
 					tf = _tf[k];
-					tf.textColor = 0x666666;
-					_cache[k] = _words[k];
-					
-					tf.text = _cache[k];
-					
+					_exTypes[k] = _types[k];
 				}
 			}
 			else {
-				for(var k:int=0; k<MAX_NUM; k++) {
+				for(k=0; k<MAX_NUM; k++) {
 					tf = _tf[k];
 					tf.textColor = 0x666666;
 				}
@@ -126,20 +180,14 @@
 		public function onUpdate(e:Event=null):void {
 			
 			if(_on) {
-				_bar+=100;
+				_bar+=150;
+				if(_bar==150) {
+					_swap.play();
+				}
 			}
 			
 			if(_cnt++) {
 				_cnt=0;
-				/*
-				if(_on) {
-					_blink++;
-					_off = false;
-					if(_blink>=2&&_blink<=4) {
-						_off = true;
-					}
-				}
-				*/
 				
 				var r:int = -6;
 				var c:int = -13;
@@ -152,47 +200,40 @@
 					
 					tf = _tf[k];
 					
-					if(_words[k]==""||c>HEIGHT) {
+					if(c>HEIGHT) {
 						tf.visible = false;
+						tf.text = "";
 					}
 					else {
 						
-						
-						if(_on&&_types[k]&&(tf.x<=_bar)) {
-							if(tf.textColor!=0xFFFFFF) {
-								tf.textColor += 0x333333;
-							}
+						if(_on&&_exTypes[k]&&(tf.x<=_bar)) {
+							if(tf.textColor!=0xFFFFFF) tf.textColor += 0x333333;
 						}
-						else {
-							if(tf.textColor!=0x666666) {
-								tf.textColor = 0x666666;
-							}
-						}
-						
-						if(!_on&&isUpdate) {
-							tf.x = r;
-							tf.y = c;
+						else if(!_on) {
+							if(tf.textColor!=0x666666) tf.textColor = 0x666666;
 							
-							tf.text = _words[k];
-							
-							r+=tf.textWidth+2;
-							if(r>=WIDTH) {
-								r = -6;
-								c+=(TEXT_HEIGHT+5);
+							if(isUpdate) {
+								tf.x = r;
+								tf.y = c;
+								
+								tf.text = _words[k];
+								r+=tf.textWidth+2;
+								if(r>=WIDTH) {
+									r = -6;
+									c+=(TEXT_HEIGHT+5);
+								}
 							}
+							
+							if(!tf.visible) tf.visible = true;
 						}
-						
-						if(!tf.visible) tf.visible = true;
 						
 					}
 				}
-				
-				if(!_on) isUpdate = false;
+				if(!_on&&isUpdate) {
+					isUpdate = false;
+					_recv.play();
+				}
 			}
-			
-			
-			
 		}
-		
 	}
 };

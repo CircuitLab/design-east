@@ -66,7 +66,18 @@
 			(_font.contentLoaderInfo).addEventListener(Event.COMPLETE,onComplete);
 			_font.load(new URLRequest("fonts/A1Mincho.swf"),_context);
 			
-			
+			/*
+			stage.addEventListener(MouseEvent.MOUSE_DOWN,function(e:MouseEvent):void {			
+				
+				var value:int = Math.random()*10000;
+				_text.begin();
+				
+				for(var i:int=0; i<value; i++) {
+					_text.add(""+(int)(i)+".",(Math.random()>0.5)?true:false);
+				}
+				_text.end();
+			});
+			*/
 		}
 		
 		private var japanes:RegExp = /[ぁ-ん一-龠ァ-ヾー]/g;
@@ -110,6 +121,8 @@
 		private function on($arr:Array):void {
 			//trace($arr);
 			var len:int = $arr.length;
+			
+			_text.begin();
 			
 			
 			for(var k:int=0; k<len; k++) {
@@ -260,6 +273,11 @@
 					
 				}
 			}
+			
+			
+			_text.end();
+				
+				
 		}
 		
 		//private var dir:Number = 1;
@@ -272,11 +290,11 @@
 			
 			
 			if(_counter++>30*5) {
-			//if(_counter++>30*10) {
+				_counter = 0;
 				_type =!_type;
 				_text.on(_type); 
 				_panel.on(_type);
-				_counter = 0;
+				
 				_fill.visible = false;
 				
 			}
