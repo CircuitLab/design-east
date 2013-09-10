@@ -91,9 +91,9 @@
 			
 			if(overflow==0) {	
 				for(k=0; k<MAX_NUM-cnt; k++) {
-					tmp = (MAX_NUM-cnt-1);
-					_words[tmp] = _words[tmp-1];
-					_types[tmp] = _types[tmp-1];
+					tmp = (MAX_NUM-1);
+					_words[tmp-k] = _words[tmp-k-cnt];
+					_types[tmp-k] = _types[tmp-k-cnt];
 				}
 			}
 			

@@ -36,7 +36,7 @@ tu.filter({ track: ['#拡散'] }, function(stream) {
       // console.log(err, result, tweet.text);
       tweet.segments = result;
       Object.keys(io.clients).forEach(function(key) {
-        //io.clients[key].send(JSON.stringify(tweet));
+        io.clients[key].send(JSON.stringify(tweet));
       });
     });
   });
