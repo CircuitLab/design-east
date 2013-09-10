@@ -55,14 +55,14 @@
 				//_label2.alpha = 1;
 				
 				Mizt.addTween(_label1,{alpha:0,time:0.8});
-				Mizt.addTween(_label2,{alpha:1,time:0.8});
+				Mizt.addTween(_label2,{alpha:1,time:1.2});
 				
 			}
 			else {
 				//_label1.alpha = 1;
 				//_label2.alpha = 0;
 				
-				Mizt.addTween(_label1,{alpha:1,time:0.8});
+				Mizt.addTween(_label1,{alpha:1,time:1.2});
 				Mizt.addTween(_label2,{alpha:0,time:0.8});
 			}
 			

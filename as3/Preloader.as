@@ -271,8 +271,8 @@
 		
 			
 			
-			
-			if(_counter++>30*10) {
+			if(_counter++>30*5) {
+			//if(_counter++>30*10) {
 				_type =!_type;
 				_text.on(_type); 
 				_panel.on(_type);
@@ -281,7 +281,7 @@
 				
 			}
 			
-			
+			/*
 			if(_fill.visible = true) {
 			if(_counter%2==0) {
 				_fill.alpha+=0.2*dir;
@@ -296,7 +296,7 @@
 			
 				}
 			}
-			
+			*/
 			
 			
 			//_bitmap.draw();

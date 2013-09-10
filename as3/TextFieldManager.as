@@ -17,11 +17,13 @@
     	private var TEXT_HEIGHT:int = 24;
     	
     	private var MAX_NUM:uint = 2048;
-    	private var _words:Array = [];
-    	private var _cache:Array = []; // cache
+    	private var _words:Vector.<String> = new Vector.<String>(MAX_NUM,true);
+    	private var _cache:Vector.<String> = new Vector.<String>(MAX_NUM,true);
     	
-    	private var _types:Array = [];
-    	private var _tf:Array = [];
+    	private var _types:Vector.<Boolean> = new Vector.<Boolean>(MAX_NUM,true);
+    	private var _tf:Vector.<TextField> = new Vector.<TextField>(MAX_NUM,true);
+    	
+    	private var _bar:int = 0;
     	
     	//private var _panel:Panel = new Panel(1);
     	
@@ -34,7 +36,7 @@
 			
 			isUpdate = true;
 			
-			for(var k:int=1; k<MAX_NUM; k++) {
+			for(var k:int=0; k<MAX_NUM-1; k++) {
 			
 				var tmp:int = (MAX_NUM-1)-k;
 				_words[tmp] = _words[tmp-1];
@@ -65,13 +67,14 @@
 			fmt.letterSpacing = 3;
 			
 			for(var k:int=0; k<MAX_NUM; k++) {
-				_words.push("");
-				_types.push(false);
+				_words[k] = "";
+				_types[k] = false;
 				
-				_tf.push(new TextField());
+				_tf[k] = new TextField();
+				
 				var tf:TextField = _tf[k];
-				
 				addChild(tf);
+				
 				tf.embedFonts = true;
 				tf.defaultTextFormat = fmt;
 				tf.text = _words[k];
@@ -83,7 +86,7 @@
 			
 			
 			for(var i:int=0; i<MAX_NUM; i++) {
-				this.add("あ");
+				this.add("あ",(Math.random()>0.5)?true:false);
 			}
 		}
 		
@@ -102,11 +105,14 @@
 			var tf:TextField;
 			
 			if(_on) { // lock
-				
+				_bar = 0;
 				for(var k:int=0; k<MAX_NUM; k++) {
 					tf = _tf[k];
-					tf.textColor = _types[k]?0xFFFFFF:0x666666;
+					tf.textColor = 0x666666;
 					_cache[k] = _words[k];
+					
+					tf.text = _cache[k];
+					
 				}
 			}
 			else {
@@ -119,11 +125,13 @@
 		
 		public function onUpdate(e:Event=null):void {
 			
+			if(_on) {
+				_bar+=100;
+			}
 			
-			
-			if(_cnt++>6) {
+			if(_cnt++) {
 				_cnt=0;
-				
+				/*
 				if(_on) {
 					_blink++;
 					_off = false;
@@ -131,17 +139,7 @@
 						_off = true;
 					}
 				}
-				/*
-				var offset:int = (int)(10+Math.random()*40);
-				
-				for(var k=offset; k<MAX_NUM; k++) {
-					words[(MAX_NUM-1)-k] = words[(MAX_NUM-1)-k-offset];
-				}
-				for(var k=0; k<offset; k++) {
-					words[k] = (Math.random()>0.5)?"愛知県":"Mexico";
-				}
 				*/
-				
 				
 				var r:int = -6;
 				var c:int = -13;
@@ -158,29 +156,42 @@
 						tf.visible = false;
 					}
 					else {
-						tf.visible = true;
-
-						if(_on&&!_off) {
-							tf.textColor = (Math.random()>0.5)?0xFFFFFF:0x666666;
+						
+						
+						if(_on&&_types[k]&&(tf.x<=_bar)) {
+							if(tf.textColor!=0xFFFFFF) {
+								tf.textColor += 0x333333;
+							}
 						}
-						tf.text = (_on)?_cache[k]:_words[k];
-						tf.x = r;
-						tf.y = c;
-						r+=tf.textWidth+2;
-						if(r>=WIDTH) {
-							r = -6;
-							c+=(TEXT_HEIGHT+5);
+						else {
+							if(tf.textColor!=0x666666) {
+								tf.textColor = 0x666666;
+							}
 						}
+						
+						if(!_on&&isUpdate) {
+							tf.x = r;
+							tf.y = c;
+							
+							tf.text = _words[k];
+							
+							r+=tf.textWidth+2;
+							if(r>=WIDTH) {
+								r = -6;
+								c+=(TEXT_HEIGHT+5);
+							}
+						}
+						
+						if(!tf.visible) tf.visible = true;
+						
 					}
 				}
+				
+				if(!_on) isUpdate = false;
 			}
-			//else if(_cnt%5==10) {
-				//var tf:TextField
-				//for(var k:int=0; k<MAX_NUM; k++) {
-					//tf = _tf[k];	
-					//tf.textColor = (tf.textColor==0xFFFFFF)?0x666666:0xFFFFFF;
-				//}
-			//}
+			
+			
+			
 		}
 		
 	}
