@@ -36,7 +36,9 @@
 		//private var _dotbitmapData:BitmapData = new BitmapData(1024,768,true,0xFF000000);
 		//private var _dotbitmap:Bitmap = new Bitmap(_dotbitmapData); 
 		
-		private var _overlay:Sprite = new Sprite();
+		private var _progress:Sprite = new Sprite();
+		
+		//private var _overlay:Sprite = new Sprite();
 		
 		private var _type:Boolean = false;
 		private var _counter:int = 0;
@@ -55,16 +57,20 @@
 			stage.scaleMode = "noScale";
 			stage.align = "TL";
 			
-			with(this.graphics) { beginFill(0xFF00171c); drawRect(0,0,WIDTH,HEIGHT); endFill(); }
+			
 			with(_fill.graphics) { beginFill(0x00171c); drawRect(0,0,WIDTH,HEIGHT); endFill(); }
 			
-			with(_overlay.graphics) { beginFill(0x0,0.5); drawRect(0,0,WIDTH,HEIGHT); endFill(); }
+			//with(_overlay.graphics) { beginFill(0x0,0.5); drawRect(0,0,WIDTH,HEIGHT); endFill(); }
 			
 			_context.applicationDomain = ApplicationDomain.currentDomain;
 
 			_font = new Loader();
 			(_font.contentLoaderInfo).addEventListener(Event.COMPLETE,onComplete);
+			(_font.contentLoaderInfo).addEventListener (ProgressEvent.PROGRESS,onProgress);
 			_font.load(new URLRequest("fonts/A1Mincho.swf"),_context);
+			
+			addChild(_progress);
+			
 			
 			/*
 			stage.addEventListener(MouseEvent.MOUSE_DOWN,function(e:MouseEvent):void {			
@@ -80,6 +86,50 @@
 			*/
 		}
 		
+		private function onProgress(e:ProgressEvent):void {
+			_progress.graphics.clear();
+			_progress.graphics.lineStyle(0,0xFFFFFF);
+			_progress.graphics.moveTo(0,stage.stageHeight>>1);
+			_progress.graphics.lineTo(stage.stageWidth*(e.bytesLoaded/e.bytesTotal),stage.stageHeight>>1);
+			
+		}
+		
+		
+		private function onResize(e:Event=null):void {
+			
+			
+			with(this.graphics) { clear(); beginFill(0xFF00171c); drawRect(0,0,stage.stageWidth,stage.stageHeight); endFill(); }
+			
+			
+			var _x:Number = stage.stageWidth/_text.width;
+			var _y:Number = stage.stageHeight/_text.height;
+			
+			if(_x>_y) {
+				_text.scaleX = _x;
+				_text.scaleY = _x;
+				_text.x = 0;
+				_text.y = (stage.stageHeight-(_text.height*_text.scaleY))>>1;
+			}
+			else {
+				_text.scaleX = _y;
+				_text.scaleY = _y;
+				_text.x = (stage.stageWidth-(_text.width*_text.scaleX))>>1;;
+				_text.y = 0;
+			}
+			
+			
+			
+			
+			_panel.x = 50;
+			_panel.y = (stage.stageHeight-_panel.height)>>1;
+			
+			
+			_credit.x = 22;
+			_credit.y = stage.stageHeight-35;
+			
+		}
+		
+
 		private var japanes:RegExp = /[ぁ-ん一-龠ァ-ヾー]/g;
 		private var kanji:RegExp   = /[一-龠]/g;
 		private var number:RegExp   = /[0-9]/g;
@@ -326,7 +376,19 @@
 		
 		private function onComplete(e:Event):void {
 			
+			_progress.graphics.clear();
+			_progress.graphics.lineStyle(0,0xFFFFFF);
+			_progress.graphics.moveTo(0,stage.stageHeight>>1);
+			_progress.graphics.lineTo(stage.stageWidth,stage.stageHeight>>1);
+			
+			Mizt.addTween(_progress,{time:0.5,alpha:0,onComplete:onLoaded})	
+		}
+		
+		private function onLoaded():void {
 			trace("onComplete");
+			_progress.graphics.clear();
+			removeChild(_progress);
+			
 			//new getClass();
 			
 			trace("<font>");
@@ -352,7 +414,7 @@
 			
 			addChild(_credit);
 			_credit.x = 22;
-			_credit.y = HEIGHT - 35;
+			_credit.y = stage.stageHeight - 35;
 			
 			if(loaderInfo.parameters["day"]&&loaderInfo.parameters["day"]=="1") {
 				trace("day1");
@@ -368,10 +430,10 @@
 			}
 			addChild(_panel);
 			_panel.x = 50;
-			_panel.y = (800-_panel.height)>>1;
+			_panel.y = (stage.stageHeight-_panel.height)>>1;
 			
-			addChild(_overlay);
-			_overlay.visible = false;
+			//addChild(_overlay);
+			//_overlay.visible = false;
 			
 			this.addEventListener(Event.ENTER_FRAME,onUpdate);
 			
@@ -379,6 +441,9 @@
 			
 			ExternalInterface.addCallback("emit",on);
 			ExternalInterface.call("de04.intialize");
+			
+			stage.addEventListener(Event.RESIZE,onResize);
+			onResize();
 			
 		}
 	}

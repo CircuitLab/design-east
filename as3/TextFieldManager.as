@@ -36,7 +36,14 @@
 		private var SwapSnd:Class;
 	    private var _swap:Sound = new SwapSnd();
 	
-	
+		public override function get width():Number {
+			return WIDTH;
+		}
+		
+		public override function get height():Number {
+			return HEIGHT;
+		}
+		
 	
     	
     	private var _tf:Vector.<TextField> = new Vector.<TextField>(MAX_NUM,true);
@@ -110,7 +117,9 @@
 		
 		
 		public function TextFieldManager():void {
-		
+			
+			with(this.graphics) { beginFill(0xFF00171c); drawRect(0,0,WIDTH,HEIGHT); endFill(); }
+			
 			var r:int = 0;
 			var c:int = 0;
 			
@@ -193,8 +202,6 @@
 				var c:int = -13;
 				var tf:TextField;
 				
-				//if(isUpdate==false) return;			
-				//isUpdate = false;
 				
 				for(var k:int=0; k<MAX_NUM; k++) {
 					
