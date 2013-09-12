@@ -18,49 +18,27 @@
 		private var CreditPNG:Class;
 		private var _credit:Bmp = new Bmp(new CreditPNG);
 		
-		//private var _text:TextField;
 		private var _font:Loader;
 		private var _context :LoaderContext = new LoaderContext();
 		
 		private var WIDTH:int = 1280;
 		private var HEIGHT:int = 800;
 		
-		private var _bitmapData:BitmapData = new BitmapData(WIDTH,HEIGHT,true,0xFF00171c);
-		private var _bitmap:Bitmap = new Bitmap(_bitmapData); 
+		//private var _bitmapData:BitmapData = new BitmapData(WIDTH,HEIGHT,true,0xFF00171c);
+		//private var _bitmap:Bitmap = new Bitmap(_bitmapData); 
 		
 		private var _text:TextFieldManager = new TextFieldManager();
 		private var _panel:Panel;
 		
-		//private var _dotBitmapData:BitmapData = new BitmapData(2,2,true,0xFF00171c);
-		//private var _dots:Sprite = new Sprite();
-		//private var _dotbitmapData:BitmapData = new BitmapData(1024,768,true,0xFF000000);
-		//private var _dotbitmap:Bitmap = new Bitmap(_dotbitmapData); 
-		
 		private var _progress:Sprite = new Sprite();
 		
-		//private var _overlay:Sprite = new Sprite();
-		
-		private var _type:Boolean = false;
-		private var _counter:int = 0;
-		
-		private var _fill:Sprite = new Sprite();
-		
-		public static function getClass(str:String):Class { return Class(ApplicationDomain.currentDomain.getDefinition(str)); }
-
-		private var _fontSize:int = 22; 
-
-		private var _row:int = 0;
-		private var _col:int = 0;
-	
+		public static function getClass(str:String):Class { return Class(ApplicationDomain.currentDomain.getDefinition(str));}
+		public static function getQuery($str:String):String { return (ExternalInterface.available)?(ExternalInterface.call("function() { var q=location.search.slice(1); if(q.indexOf('"+$str+"=')==0) { var q = q.replace('"+$str+"=',''); } else{ q=''; } return q; }")):(""); }
+        	
 		public function Preloader():void {	
 			
 			stage.scaleMode = "noScale";
 			stage.align = "TL";
-			
-			
-			with(_fill.graphics) { beginFill(0x00171c); drawRect(0,0,WIDTH,HEIGHT); endFill(); }
-			
-			//with(_overlay.graphics) { beginFill(0x0,0.5); drawRect(0,0,WIDTH,HEIGHT); endFill(); }
 			
 			_context.applicationDomain = ApplicationDomain.currentDomain;
 
@@ -70,20 +48,6 @@
 			_font.load(new URLRequest("fonts/A1Mincho.swf"),_context);
 			
 			addChild(_progress);
-			
-			
-			/*
-			stage.addEventListener(MouseEvent.MOUSE_DOWN,function(e:MouseEvent):void {			
-				
-				var value:int = Math.random()*10000;
-				_text.begin();
-				
-				for(var i:int=0; i<value; i++) {
-					_text.add(""+(int)(i)+".",(Math.random()>0.5)?true:false);
-				}
-				_text.end();
-			});
-			*/
 		}
 		
 		private function onProgress(e:ProgressEvent):void {
@@ -117,12 +81,8 @@
 				_text.y = 0;
 			}
 			
-			
-			
-			
 			_panel.x = 50;
 			_panel.y = (stage.stageHeight-_panel.height)>>1;
-			
 			
 			_credit.x = 22;
 			_credit.y = stage.stageHeight-35;
@@ -133,7 +93,6 @@
 		private var japanes:RegExp = /[ぁ-ん一-龠ァ-ヾー]/g;
 		private var kanji:RegExp   = /[一-龠]/g;
 		private var number:RegExp   = /[0-9]/g;
-		
 		
 		private var english:Array = [
 			"topophilia",
@@ -165,7 +124,9 @@
 			"ui",
 			"nono",
 			"fantastic",
-			"market"		
+			"market",
+			"market",
+			"omomma"
 		]; 
 		
 		private function on($arr:Array):void {
@@ -193,14 +154,16 @@
 							if(uid-1>=0&&uid+1<len&&(($arr[uid-1][0].search(number)>=0))&&(($arr[uid+1][0].search(number)>=0))) {
 								key = true;
 							}
-							
-							
 						}
 						else if(tmp.length==1&&tmp.search(kanji)>=0) {
 							key = false;
 							if(tmp=="時") key = true;
 							else if(tmp=="分") key = true;
 							else if(tmp=="前") key = true;
+							else {
+								// どちらかが感じなら true に
+								
+							}
 						}
 						else if(tmp.search(japanes)>=0) {
 							
@@ -330,50 +293,19 @@
 				
 		}
 		
-		//private var dir:Number = 1;
-		private var dir:Number = 1;
+		private function onAccumlation(e:Event):void {
+			_panel.on(true);
+		}
 		
-		private function onUpdate(e:Event):void {
-			_text.onUpdate();
-			//_fill.alpha = Math.random();
-		
-			
-			
-			if(_counter++>30*5) {
-				_counter = 0;
-				_type =!_type;
-				_text.on(_type); 
-				_panel.on(_type);
-				
-				_fill.visible = false;
-				
-			}
-			
-			/*
-			if(_fill.visible = true) {
-			if(_counter%2==0) {
-				_fill.alpha+=0.2*dir;
-					if(_fill.alpha>1) {
-						_fill.alpha = 1;
-						dir = -1;
-					}
-					if(_fill.alpha<0) {
-						_fill.alpha = 0;
-						dir = 1;
-					}
-			
-				}
-			}
-			*/
-			
-			
-			//_bitmap.draw();
-		
-			//_bitmap.alpha -= 0.1;
-			//if(_bitmap.alpha==0) _bitmap.alpha=0;
+		private function onExtraction(e:Event):void {
+			_panel.on(false);
 		}
 		
 		
+		private function onUpdate(e:Event):void {
+			_text.onUpdate();
+		}
+			
 		private function onComplete(e:Event):void {
 			
 			_progress.graphics.clear();
@@ -389,51 +321,30 @@
 			_progress.graphics.clear();
 			removeChild(_progress);
 			
-			//new getClass();
-			
-			trace("<font>");
-			var fontList:Array = Font.enumerateFonts(false);
-			for each(var font:Font in fontList) {
-				trace(font.fontName);
-			}
-			trace("</font>");
-			
-
 			
 			addChild(_text);
-			addChild(_fill);
-			_fill.visible = false;
-			
-			
-			addChild(_bitmap);
-			_bitmap.visible = false;
-			
-			//_dotBitmapData.setPixel32(0,0,0x33000000);
-			//_dotBitmapData.setPixel32(1,1,0x99000000);
-			//addChild(_bitmap);
+			_text.addEventListener("ACCUMLATION",onAccumlation);
+			_text.addEventListener("EXTRACTION",onExtraction);
 			
 			addChild(_credit);
 			_credit.x = 22;
 			_credit.y = stage.stageHeight - 35;
 			
-			if(loaderInfo.parameters["day"]&&loaderInfo.parameters["day"]=="1") {
-				trace("day1");
-				 _panel = new Panel(1);
+			var day:String = getQuery("day");
+			
+			if(day=="2") {
+				_panel = new Panel(2);
 			}
-			else if(loaderInfo.parameters["day"]&&loaderInfo.parameters["day"]=="2") {
-				trace("day2");
-				 _panel = new Panel(2);
-			}
-			else {
-				trace("day3");	
+			else if(day=="3") {
 				_panel = new Panel(3);
 			}
+			else {
+				_panel = new Panel(1);
+			}			
+			
 			addChild(_panel);
 			_panel.x = 50;
 			_panel.y = (stage.stageHeight-_panel.height)>>1;
-			
-			//addChild(_overlay);
-			//_overlay.visible = false;
 			
 			this.addEventListener(Event.ENTER_FRAME,onUpdate);
 			

@@ -27,6 +27,18 @@
     	private var _cacheWords:Array = [];
     	private var _cacheTypes:Array = [];
     	
+    	private var _timer:int = 0;
+    	private var _tf:Vector.<TextField> = new Vector.<TextField>(MAX_NUM,true);    	
+    	private var _bar:int = 0;
+    	
+    	
+    	private var _font:Loader;
+		private var _context :LoaderContext = new LoaderContext();
+		private var _cnt:int = 0;
+		
+		private var isPlay:Boolean = false;
+		
+		private var isUpdate:Boolean = false;
     	
     	[Embed(source="recv.mp3")]
 		private var RecvSnd:Class;
@@ -36,25 +48,10 @@
 		private var SwapSnd:Class;
 	    private var _swap:Sound = new SwapSnd();
 	
-		public override function get width():Number {
-			return WIDTH;
-		}
+		public override function get width():Number  { return WIDTH; }
+		public override function get height():Number { return HEIGHT; }
 		
-		public override function get height():Number {
-			return HEIGHT;
-		}
 		
-	
-    	
-    	private var _tf:Vector.<TextField> = new Vector.<TextField>(MAX_NUM,true);
-    	
-    	private var _bar:int = 0;
-    	
-    	//private var _panel:Panel = new Panel(1);
-    	
-    	private var _font:Loader;
-		private var _context :LoaderContext = new LoaderContext();
-		private var _cnt:int = 0;
 		
 		public function begin():void {
 			isUpdate = false;
@@ -64,8 +61,6 @@
 				_cacheTypes[k] = false;
 			}	
 		}
-		
-		
 		
 		public function add($word:String,$type:Boolean=false):void {
 			
@@ -81,17 +76,12 @@
 			_cacheCount++;
 		}
 		
-		
 		public function end():void {
 			
 			var cnt:int = _cacheCount;
 			
-			
 			var overflow:int = 0;
 			if(cnt>=MAX_NUM) overflow = cnt-MAX_NUM;
-			
-			
-			
 			
 			var k:int = 0;
 			var tmp:int = 0;
@@ -110,11 +100,8 @@
 				_types[k-overflow] = _cacheTypes[tmp];
 			}
 			
-			
 			isUpdate = true;
 		}
-		
-		
 		
 		public function TextFieldManager():void {
 			
@@ -155,55 +142,29 @@
 		
 		
 		
-		private var _on:Boolean = false;
-		private var _off:Boolean = false;
-		private var _blink:int = 0;
 		
-		private var isUpdate:Boolean = false;
-		
-		public function on($type:Boolean = false):void {
-		
-			trace("on\n");
-			
-			_on = $type;
-			_blink=0;
-			var tf:TextField;
-			var k:int=0;
-			
-			
-			if(_on) { // lock
-				_bar = 0;
-				for(k=0; k<MAX_NUM; k++) {
-					tf = _tf[k];
-					_exTypes[k] = _types[k];
-				}
-			}
-			else {
-				for(k=0; k<MAX_NUM; k++) {
-					tf = _tf[k];
-					tf.textColor = 0x666666;
-				}
-			}
-		}
 		
 		public function onUpdate(e:Event=null):void {
 			
-			if(_on) {
-				_bar+=150;
-				if(_bar==150) {
-					_swap.play();
-				}
-			}
+			//if(_cnt++) _cnt=0;
+			//var isPlay:Boolean = true;
 			
-			if(_cnt++) {
-				_cnt=0;
+			isPlay = !isPlay;
+			
+			var k:int = 0;
+			
+			var tf:TextField;
+				
+			
+			_timer++;
+			if(_timer<30*5) { // 
+				
+				if(!isPlay) return;
 				
 				var r:int = -6;
 				var c:int = -13;
-				var tf:TextField;
-				
-				
-				for(var k:int=0; k<MAX_NUM; k++) {
+			
+				for(k=0; k<MAX_NUM; k++) {
 					
 					tf = _tf[k];
 					
@@ -212,34 +173,83 @@
 						tf.text = "";
 					}
 					else {
-						
-						if(_on&&_exTypes[k]&&(tf.x<=_bar)) {
-							if(tf.textColor!=0xFFFFFF) tf.textColor += 0x333333;
-						}
-						else if(!_on) {
-							if(tf.textColor!=0x666666) tf.textColor = 0x666666;
+						if(tf.textColor!=0x666666) tf.textColor = 0x666666;
 							
-							if(isUpdate) {
-								tf.x = r;
-								tf.y = c;
+						if(isUpdate) {
+							tf.x = r;
+							tf.y = c;
 								
-								tf.text = _words[k];
-								r+=tf.textWidth+2;
-								if(r>=WIDTH) {
-									r = -6;
-									c+=(TEXT_HEIGHT+5);
-								}
+							tf.text = _words[k];
+							r+=tf.textWidth+2;
+							if(r>=WIDTH) {
+								r = -6;
+								c+=(TEXT_HEIGHT+5);
 							}
-							
-							if(!tf.visible) tf.visible = true;
 						}
-						
-					}
+							
+						if(!tf.visible) tf.visible = true;
+					}		
 				}
-				if(!_on&&isUpdate) {
+				
+				
+				if(isUpdate) {
 					isUpdate = false;
+					
 					_recv.play();
 				}
+				
+			}
+			else if(_timer==30*5) {
+				
+				this.dispatchEvent(new Event("EXTRACTION"));
+				
+				_swap.play();
+				_bar=150; // reset
+				
+				for(k=0; k<MAX_NUM; k++) {
+					tf = _tf[k];
+					_exTypes[k] = _types[k];
+				}
+				
+				if(!isPlay) return;
+				
+				for(k=0; k<MAX_NUM; k++) {
+					tf = _tf[k];
+					if(_exTypes[k]&&(tf.x<=_bar)&&tf.textColor!=0xFFFFFF) tf.textColor += 0x333333;
+				}
+				
+			}
+			else if(_timer<30*10) {
+			
+				if(!isPlay) return;
+				
+				_bar+=150;
+				for(k=0; k<MAX_NUM; k++) {
+					tf = _tf[k];
+					if(_exTypes[k]&&(tf.x<=_bar)&&tf.textColor!=0xFFFFFF) tf.textColor += 0x333333;
+				}
+			}
+			else if(_timer==30*10) { // fadeout
+				this.dispatchEvent(new Event("ACCUMLATION"));
+				
+				if(!isPlay) return;
+				
+				for(k=0; k<MAX_NUM; k++) {
+					tf = _tf[k];
+					if(_exTypes[k]&&(tf.x<=_bar)&&tf.textColor>0x666666) tf.textColor -= 0x333333;
+				}
+			}
+			else if(_timer<30*11) { // fadeout
+				
+				if(!isPlay) return;
+				
+				for(k=0; k<MAX_NUM; k++) {
+					tf = _tf[k];
+					if(_exTypes[k]&&(tf.x<=_bar)&&tf.textColor>0x666666) tf.textColor -= 0x333333;
+				}
+			}
+			else if(_timer==30*11) { // crossfade
+				_timer = 0;
 			}
 		}
 	}
