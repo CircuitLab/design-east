@@ -374,7 +374,7 @@
 				_bitmap.visible = false;
 				
 				_timer = 0;
-				
+				_recv.play();
 			}
 		}
 	}
