@@ -11,7 +11,8 @@
 	
 	import mizt.Mizt;
 	import mizt.display.Bmp;
-
+	
+    
     public class Preloader extends Sprite {
     
 	    [Embed(source="assets/credit.png",mimeType="image/png")]
@@ -23,9 +24,6 @@
 		
 		private var WIDTH:int = 1280;
 		private var HEIGHT:int = 800;
-		
-		//private var _bitmapData:BitmapData = new BitmapData(WIDTH,HEIGHT,true,0xFF00171c);
-		//private var _bitmap:Bitmap = new Bitmap(_bitmapData); 
 		
 		private var _text:TextFieldManager = new TextFieldManager();
 		private var _panel:Panel;
@@ -61,9 +59,7 @@
 		
 		private function onResize(e:Event=null):void {
 			
-			
 			with(this.graphics) { clear(); beginFill(0xFF00171c); drawRect(0,0,stage.stageWidth,stage.stageHeight); endFill(); }
-			
 			
 			var _x:Number = stage.stageWidth/_text.width;
 			var _y:Number = stage.stageHeight/_text.height;
@@ -85,14 +81,15 @@
 			_panel.y = (stage.stageHeight-_panel.height)>>1;
 			
 			_credit.x = 22;
-			_credit.y = stage.stageHeight-35;
-			
+			_credit.y = stage.stageHeight-35;	
+		
 		}
 		
-
 		private var japanes:RegExp = /[ぁ-ん一-龠ァ-ヾー]/g;
 		private var kanji:RegExp   = /[一-龠]/g;
-		private var number:RegExp   = /[0-9]/g;
+		private var katakana:RegExp   = /[ァ-ヾ]/g;
+		private var kana:RegExp   = /[ぁ-ん]/g;
+		private var number:RegExp   = /[0-9０-９]/g;
 		
 		private var english:Array = [
 			"topophilia",
@@ -126,30 +123,32 @@
 			"fantastic",
 			"market",
 			"market",
-			"omomma"
+			"omomma",
+			"hacking",
+			"shop"
 		]; 
 		
 		private function on($arr:Array):void {
 			//trace($arr);
-			var len:int = $arr.length;
 			
+			if($arr==null||$arr.length<1) return;
+			
+			var len:int = $arr.length;
 			_text.begin();
 			
 			
 			for(var k:int=0; k<len; k++) {
 			
 				var uid:int = (len-1)-k;
-				//trace($arr[k][7]);
 				var cache:Array = $arr[uid];
 				var tmp:String = cache[0];
-				//var tmp:String = $arr[k][1];
+				
 				if(tmp!=="*") {
 					
 					var key:Boolean = false;
 					
 					if((cache[1]=="名詞")) {
 					
-						
 						if(tmp.length==1&&tmp=="/") {
 							if(uid-1>=0&&uid+1<len&&(($arr[uid-1][0].search(number)>=0))&&(($arr[uid+1][0].search(number)>=0))) {
 								key = true;
@@ -157,16 +156,22 @@
 						}
 						else if(tmp.length==1&&tmp.search(kanji)>=0) {
 							key = false;
-							if(tmp=="時") key = true;
-							else if(tmp=="分") key = true;
-							else if(tmp=="前") key = true;
-							else {
-								// どちらかが感じなら true に
-								
+							
+							if(uid-1>=0&&($arr[uid-1][0].search(kanji)>=0)) {
+								key = true;
 							}
+							else if(uid-1>=0&&($arr[uid-1][0].search(number)>=0)) {
+								key = true;
+							}
+							else if(uid+1<len&&($arr[uid+1][0].search(kanji)>=0)){
+								key = true;
+							}
+							else if(uid+1<len&&($arr[uid+1][0].search(number)>=0)){
+								key = true;
+							}
+							
 						}
 						else if(tmp.search(japanes)>=0) {
-							
 							
 							if(tmp.length==1&&tmp=="の") {	
 								if(uid-4>=0&&uid+3<len) {
@@ -174,12 +179,13 @@
 									else if($arr[uid-4][0]=="ファッション"&&$arr[uid-3][0]=="は"&&$arr[uid-2][0]=="更新"&&$arr[uid-1][0]=="できる"&&$arr[uid+1][0]=="か"&&$arr[uid+2][0]=="？"&&$arr[uid+3][0]=="会議") key = true;
 								}
 							}
-							if(tmp.length<=3&&tmp.search(kanji)==-1) {
+							if((tmp.length<=2&&tmp.search(kana)>=0)&&tmp.search(kanji)==-1) {
 								key = false;
 							}
 							else {
 								key = true;
 							}
+							
 						}
 						else {
 							var lowercase:String = tmp.toLowerCase();
@@ -202,8 +208,8 @@
 								}
 								
 								if(lowercase=="designeast") {
-									if((uid-1>=0)&&[uid-1][0]=="@") key = false;
-									if((uid+1>=0)&&[uid+1][0]==".") key = false;
+									if((uid-1>=0)&&$arr[uid-1][0]=="@") key = false;
+									if((uid+1>=0)&&$arr[uid+1][0]==".") key = false;
 								}
 							}
 						}
@@ -267,42 +273,56 @@
 					
 					
 					if(cache[2]=="数") {
-						key = true;
+						key = false;
 						
 						if(tmp=="04") {
+							key = true;
 							if(uid-2>=0) {
 								//key = true;
 								if($arr[uid-2][0]=="#") key = false;
 								else if($arr[uid-2][0]=="@") key = false;
 							}
 						}
-						else if((uid-1>=0&&($arr[uid-1][0].search(japanes)>=0))||(uid+1<len&&($arr[uid+1][0].search(japanes)>=0))) {
+						else if((uid-1>=0&&($arr[uid-1][0].search(kanji)>=0))||(uid+1<len&&($arr[uid+1][0].search(kanji)>=0))) {
 							key = true;
 						}
 						
 					}
-					
 					_text.add(tmp,(key)?true:false);
-					
 				}
 			}
-			
-			
 			_text.end();
-				
-				
 		}
 		
+		private var isAcumaltion:Boolean = true;
+		private var isExtraction:Boolean = false;
+		
 		private function onAccumlation(e:Event):void {
-			_panel.on(true);
+			//_panel.on(false);
+			isAcumaltion = true;
+			isExtraction = false;
+			
+			_panel.on(false);
 		}
 		
 		private function onExtraction(e:Event):void {
-			_panel.on(false);
+			//_panel.on(true);
+			
+			isAcumaltion = false;
+			isExtraction = true;
+			
+			_panel.on(true);
+			
 		}
 		
 		
 		private function onUpdate(e:Event):void {
+		
+			var t:int = _text.getTimer();
+			
+			if(isAcumaltion) _panel.accumlation(t/300);
+			if(isExtraction) _panel.extraction((t-300)/(740-300));
+			
 			_text.onUpdate();
 		}
 			
@@ -320,7 +340,6 @@
 			trace("onComplete");
 			_progress.graphics.clear();
 			removeChild(_progress);
-			
 			
 			addChild(_text);
 			_text.addEventListener("ACCUMLATION",onAccumlation);
@@ -340,7 +359,7 @@
 			}
 			else {
 				_panel = new Panel(1);
-			}			
+			}
 			
 			addChild(_panel);
 			_panel.x = 50;
@@ -348,14 +367,13 @@
 			
 			this.addEventListener(Event.ENTER_FRAME,onUpdate);
 			
-			addChild(new Stats());
+			//addChild(new Stats());
 			
 			ExternalInterface.addCallback("emit",on);
 			ExternalInterface.call("de04.intialize");
 			
 			stage.addEventListener(Event.RESIZE,onResize);
 			onResize();
-			
 		}
 	}
 };

@@ -48,25 +48,30 @@
 		private var _base:Sprite = new Sprite();
 		
 		
-		public function on($b:Boolean=false):void {
-			
+		public function on($b:Boolean=false):void {	
 			if($b) {
-				//_label1.alpha = 0;
-				//_label2.alpha = 1;
-				
-				Mizt.addTween(_label1,{alpha:0,time:0.8});
-				Mizt.addTween(_label2,{alpha:1,time:1.2});
-				
+				Mizt.addTween(_text1,{alpha:0.3,time:0.8});
+				Mizt.addTween(_text2,{alpha:1.0,time:0.8});
+				Mizt.addTween(_label1,{scaleX:0.0,time:1.2});
 			}
 			else {
-				//_label1.alpha = 1;
-				//_label2.alpha = 0;
-				
-				Mizt.addTween(_label1,{alpha:1,time:1.2});
-				Mizt.addTween(_label2,{alpha:0,time:0.8});
+				Mizt.addTween(_text1,{alpha:1.0,time:0.8});
+				Mizt.addTween(_text2,{alpha:0.3,time:0.8});
+				Mizt.addTween(_label2,{scaleX:0.0,time:1.2});
 			}
+		}
+		
+		
+		public function accumlation(n:Number):void {
+			_label1.scaleX = n;
 			
 		}
+		
+		public function extraction(n:Number):void {
+			_label2.scaleX = n;
+		}
+		
+		
 		
 		public function Panel($day:int):void {	
 			
@@ -81,13 +86,17 @@
 			}
 			
 			addChild(_logo);
+			
 			_logo.y = 0;
 			_logo.x = 0;
-			
+			// 0x5b5b5b
 			with(_base.graphics) { beginFill(0x5b5b5b),drawRect(0,0,255,32),drawRect(255+25,0,255,32),endFill(); }
 
 			with(_label1.graphics) { beginFill(0xFFFFFF),drawRect(0,0,255,32),endFill(); }
 			with(_label2.graphics) { beginFill(0xFFFFFF),drawRect(0,0,255,32),endFill(); }
+			
+			_label1.scaleX = 0;
+			_label2.scaleX = 0;
 			
 			addChild(_base);
 			_base.x = _logo.x + 2;
@@ -96,20 +105,20 @@
 			addChild(_label1);
 			addChild(_label2);
 			
-			_label2.alpha = 0;
+			_text2.alpha = 0.3;
 			
 			_label1.x = _logo.x + 2;
 			_label1.y = _logo.y + _logo.height + 35;
-			_label2.x = _label1.x + _label1.width + 25;
+			_label2.x = _label1.x + 255 + 25;
 			_label2.y = _label1.y;
 			
 			addChild(_text1);
 			addChild(_text2);
 			
-			_text1.x = _label1.x + ((_label1.width-_text1.width)>>1);
+			_text1.x = _label1.x + ((255-_text1.width)>>1);
 			_text1.y = _label1.y + ((_label1.height-_text1.height)>>1);
 			
-			_text2.x = _label2.x + ((_label2.width-_text2.width)>>1);
+			_text2.x = _label2.x + ((255-_text2.width)>>1);
 			_text2.y = _label2.y + ((_label2.height-_text2.height)>>1);
 			
 		}
