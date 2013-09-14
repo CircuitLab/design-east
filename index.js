@@ -30,7 +30,7 @@ io.on('connection', function (socket) {
  });
 });
 
-tu.filter({ track: ['#拡散'] }, function(stream) {
+tu.filter({ track: ['#de04'] }, function(stream) {
   stream.on('tweet', function(tweet) {
     mecab.parse(tweet.text, function(err, result) {
       // console.log(err, result, tweet.text);
